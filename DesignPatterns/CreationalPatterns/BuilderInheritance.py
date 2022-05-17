@@ -1,8 +1,10 @@
 
-
 class Employee:
 
     def __init__(self):
+        # Gerenal Information
+        self.name = None
+        self.mobile_number = None
         # Address
         self.street = None
         self.postcode = None
@@ -13,29 +15,28 @@ class Employee:
         self.annual_income = None
 
     def specification(self):
-        return f'Address: {self.street}, {self.postcode}, {self.city} '\
+        return f'{self.name}, {self.mobile_number} ' \
+               f'Address: {self.street}, {self.postcode}, {self.city} '\
                 f'Employment Details: {self.employment_number}, {self.position}, {self.annual_income}'
 
-class EmployeeBuilder:
+
+class GeneralInfoBuilder:
 
     def __init__(self, employee=Employee()):
         self.employee = employee
 
-    @property
-    def address_info(self):
-        return AddressBuilder(self.employee)
+    def setname(self, name):
+        self.employee.name = name
+        return self
 
-    @property
-    def employment_info(self):
-        return EmploymentBuilder(self.employee)
+    def setmobilenumber(self, number):
+        self.employee.mobile_number = number
+        return self
 
-    def build(self):
-        return self.employee
 
-class AddressBuilder(EmployeeBuilder):
 
-    def __init__(self, employee):
-        super().__init__(employee)
+
+class AddressBuilder(GeneralInfoBuilder):
 
     def setstreet(self, street):
         self.employee.street = street
@@ -49,10 +50,9 @@ class AddressBuilder(EmployeeBuilder):
         self.employee.city = city
         return self
 
-class EmploymentBuilder(EmployeeBuilder):
 
-    def __init__(self, employee):
-        super().__init__(employee)
+
+class EmploymentBuilder(AddressBuilder):
 
     def setemploymentnumber(self, number):
         self.employee.employment_number = number
@@ -66,17 +66,20 @@ class EmploymentBuilder(EmployeeBuilder):
         self.employee.annual_income = income
         return self
 
-eb = EmployeeBuilder()
+    def build(self):
+        return self.employee
+
+eb = EmploymentBuilder()
 
 employee = eb\
-            .address_info\
-                .setstreet('Clean Street')\
-                .setpostcode('123456')\
-                .setcity('Nice City')\
-            .employment_info\
-                .setemploymentnumber('1111')\
-                .setposition('Engineer')\
-                .setannualincome(500000)\
+            .setname('Mr.Employee')\
+            .setmobilenumber('+919999999999')\
+            .setstreet('Clean Street')\
+            .setpostcode('123456')\
+            .setcity('Nice City')\
+            .setemploymentnumber('1111')\
+            .setposition('Engineer')\
+            .setannualincome(500000)\
             .build()
 
 print(employee.specification())
